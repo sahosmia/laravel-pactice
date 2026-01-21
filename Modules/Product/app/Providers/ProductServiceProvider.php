@@ -36,6 +36,10 @@ class ProductServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+        $this->app->bind(
+            \Modules\Product\App\Repositories\ProductRepository::class,
+            // \Modules\Product\App\Repositories\ProductRepositoryEloquent::class
+        );
     }
 
     /**

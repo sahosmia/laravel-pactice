@@ -13,7 +13,7 @@ class Product extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = ['title', 'description', 'price'];
 
     // protected static function newFactory(): ProductFactory
     // {
