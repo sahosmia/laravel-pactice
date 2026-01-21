@@ -1,13 +1,11 @@
+@extends('layouts.auth')
+@section('content')
 <form method="POST" action="{{ route('admin.login.submit') }}">
     @csrf
 
-    <h2>User Login</h2>
+    <h2 class="">User Login</h2>
 
-    <div>
-        <label>Email Address</label>
-        <input type="email" name="email" value="{{ old('email') }}" required autofocus>
-    </div>
-
+    <x-form.input name="email" label="Email" />
     <div>
         <label>Password</label>
         <input type="password" name="password" required>
@@ -20,3 +18,4 @@
 
     <button type="submit">Login</button>
 </form>
+@endsection

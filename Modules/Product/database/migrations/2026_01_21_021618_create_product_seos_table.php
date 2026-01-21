@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('product_seos', function (Blueprint $table) {
             $table->id();
-            
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->string('meta_title')->nullable();
+            $table->text('meta_description')->nullable();
+            $table->string('meta_keywords')->nullable();
             $table->timestamps();
         });
     }
