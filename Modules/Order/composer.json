@@ -13,6 +13,11 @@
             "aliases": {
 
             }
+        },
+        "merge-plugin": {
+            "include": [
+                "Modules/*/composer.json"
+            ]
         }
     },
     "autoload": {
