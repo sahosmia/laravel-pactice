@@ -3,55 +3,67 @@
 namespace Modules\Product\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Modules\Product\Services\CategoryService;
+use Modules\Product\Http\Requests\StoreCategoryRequest;
+use Modules\Product\Http\Requests\UpdateCategoryRequest;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     public function index()
     {
-        echo "hello";
-        // return view('product::index');
+        $categories = $this->categoryService->all();
+        return view('product::categories.index', compact('categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return view('product::create');
+        $categories = $this->categoryService->all();
+        return view('product::categories.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) {}
+    public function store(StoreCategoryRequest $request)
+    {
+        $data = $request->validated();
+        $data['slug'] = Str::slug($data['name']);
+        $this->categoryService->create($data);
 
-    /**
-     * Show the specified resource.
-     */
+        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
+    }
+
     public function show($id)
     {
-        return view('product::show');
+        $category = $this->categoryService->find($id);
+        return view('product::categories.show', compact('category'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
-        return view('product::edit');
+        $category = $this->categoryService->find($id);
+        return view('product::categories.edit', compact('category'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
+    public function update(UpdateCategoryRequest $request, $id)
+    {
+        $data = $request->validated();
+        if (isset($data['name'])) {
+            $data['slug'] = Str::slug($data['name']);
+        }
+        $this->categoryService->update($id, $data);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id) {}
+        return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
+    }
+
+    public function destroy($id)
+    {
+        $this->categoryService->delete($id);
+        return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
+    }
 }

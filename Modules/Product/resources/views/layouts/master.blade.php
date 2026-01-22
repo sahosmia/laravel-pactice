@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="product-module-wrapper">
-        <h2>master layout</h2>
-        @yield('module_content') {{-- Custom hook for module pages --}}
+    <div class="p-5 w-full bg-indigo-500 text-2xl text-white text-center">{{ config('product.name') }} Module</div>
+    @yield('module_content') {{-- Custom hook for module pages --}}
     </div>
 @endsection
