@@ -1,8 +1,8 @@
 <?php
 
-namespace Modules\Product\App\Services;
+namespace Modules\Product\Services;
 
-use Modules\Product\App\Repositories\ProductRepository;
+use Modules\Product\Repositories\ProductRepository;
 
 class ProductService
 {
@@ -13,29 +13,28 @@ class ProductService
         $this->productRepository = $productRepository;
     }
 
-    public function getAllProducts()
+    public function all()
     {
-        return $this->productRepository->getAll();
+        return $this->productRepository->all();
     }
 
-    public function getProductById($id)
+    public function find($id)
     {
         return $this->productRepository->findById($id);
     }
 
-    public function createProduct($data)
+    public function create(array $data)
     {
         return $this->productRepository->create($data);
     }
 
-    public function updateProduct($id, $data)
+    public function update($id, array $data)
     {
         return $this->productRepository->update($id, $data);
     }
 
-    public function deleteProduct($id)
+    public function delete($id)
     {
         return $this->productRepository->delete($id);
     }
 }
-

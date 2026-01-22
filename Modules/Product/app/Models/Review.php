@@ -4,7 +4,8 @@ namespace Modules\Product\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Modules\Product\Database\Factories\ReviewFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\User;
 
 class Review extends Model
 {
@@ -13,10 +14,21 @@ class Review extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'product_id',
+        'user_id',
+        'rating',
+        'comment',
+        'status',
+    ];
 
-    // protected static function newFactory(): ReviewFactory
-    // {
-    //     // return ReviewFactory::new();
-    // }
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

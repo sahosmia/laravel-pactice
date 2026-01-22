@@ -3,63 +3,81 @@
 namespace Modules\Product\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Modules\Product\App\Services\ProductService;
+use Modules\Product\Services\ProductService;
+use Modules\Product\Http\Requests\StoreProductRequest;
+use Modules\Product\Http\Requests\UpdateProductRequest;
+use Illuminate\Support\Str;
+use Modules\Product\Services\BrandService;
+use Modules\Product\Services\CategoryService;
+use Modules\Product\Services\TagService;
 
 class ProductController extends Controller
 {
     protected $productService;
+    protected $categoryService;
+    protected $brandService;
+    protected $tagService;
 
-    public function __construct(ProductService $productService)
+    public function __construct(ProductService $productService, CategoryService $categoryService, BrandService $brandService, TagService $tagService)
     {
         $this->productService = $productService;
+        $this->categoryService = $categoryService;
+        $this->brandService = $brandService;
+        $this->tagService = $tagService;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $data = $this->productService->getAllProducts();
-        return view('product::products.index', compact('data'));
+        $products = $this->productService->all();
+        return view('product::products.index', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return view('product::products.create');
+        $categories = $this->categoryService->all();
+        $brands = $this->brandService->all();
+        $tags = $this->tagService->all();
+        return view('product::products.create', compact('categories', 'brands', 'tags'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) {}
+    public function store(StoreProductRequest $request)
+    {
+        $data = $request->validated();
+        $data['slug'] = Str::slug($data['name']);
+        $this->productService->create($data);
 
-    /**
-     * Show the specified resource.
-     */
+        return redirect()->route('products.index')->with('success', 'Product created successfully.');
+    }
+
     public function show($id)
     {
-        return view('product::show');
+        $product = $this->productService->find($id);
+        return view('product::products.show', compact('product'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
-        return view('product::edit');
+        $product = $this->productService->find($id);
+        $categories = $this->categoryService->all();
+        $brands = $this->brandService->all();
+        $tags = $this->tagService->all();
+        return view('product::products.edit', compact('product', 'categories', 'brands', 'tags'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
+    public function update(UpdateProductRequest $request, $id)
+    {
+        $data = $request->validated();
+        if (isset($data['name'])) {
+            $data['slug'] = Str::slug($data['name']);
+        }
+        $this->productService->update($id, $data);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id) {}
+        return redirect()->route('products.index')->with('success', 'Product updated successfully.');
+    }
+
+    public function destroy($id)
+    {
+        $this->productService->delete($id);
+        return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+    }
 }

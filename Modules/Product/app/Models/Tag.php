@@ -4,7 +4,7 @@ namespace Modules\Product\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Modules\Product\Database\Factories\TagFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tag extends Model
 {
@@ -13,10 +13,13 @@ class Tag extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'name',
+        'slug',
+    ];
 
-    // protected static function newFactory(): TagFactory
-    // {
-    //     // return TagFactory::new();
-    // }
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'product_tags');
+    }
 }
