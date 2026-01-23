@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\SlugRouteKey;
 
 class Category extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, SlugRouteKey;
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +22,16 @@ class Category extends Model
         'parent_id',
         'status',
     ];
+
+    // key  override
+    // public  function getRouteKeyName(){
+    //     return 'slug';
+    // }
+
+     public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
 
     public function parent(): BelongsTo
     {
