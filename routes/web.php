@@ -13,9 +13,11 @@ use App\Http\Controllers\Auth\UserLoginController;
 */
 
 // সাধারণ ভিজিটরদের জন্য (লগইন ছাড়া)
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/categories', [App\Http\Controllers\CategoryController::class, 'index'])->name('categories');
+Route::get('/categories/{slug}', [App\Http\Controllers\CategoryController::class, 'show'])->name('categories.show');
+
+Route::get('search', [App\Http\Controllers\SearchController::class, 'search'])->name('search');
 
 // কাস্টমার লগইন করা থাকলে (auth:web)
 Route::middleware(['auth:web'])->group(function () {
@@ -62,12 +64,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // যারা লগইন করা আছেন (Auth Admin)
     Route::middleware(['auth:admin'])->group(function () {
 
-Route::get('/dashboard', function () {
-    return view('admin.dashboard');
-})->name('dashboard');
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
 
         Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
 
         // অ্যাডমিনের অন্যান্য রাউট এখানে যোগ করুন...
     });
-});
+
+
+    });
+    Route::get('developers', [App\Http\Controllers\DeveloperController::class, 'index'])->name('developers.index');
+    Route::get('developer/cache/clear', [App\Http\Controllers\DeveloperController::class, 'clearCache'])->name('developer.cache.clear');
